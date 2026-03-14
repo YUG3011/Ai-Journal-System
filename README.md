@@ -68,3 +68,24 @@ cd backend
 npm install
 npx prisma migrate dev
 npm run dev
+
+---
+
+docker images
+
+we use three docker images in this project:
+- node: runs the backend api (node:20)
+- postgres: provides the postgresql database (postgres:15)
+- redis: provides an in-memory cache (redis:7-alpine)
+redis is used to cache llm emotion analysis results so repeated texts do not trigger new llm api calls.
+
+to run the full stack locally with docker compose:
+```bash
+docker compose up -d
+```
+
+to rebuild only the backend image after code changes:
+```bash
+docker compose build backend
+docker compose up -d backend
+```
