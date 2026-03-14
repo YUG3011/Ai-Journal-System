@@ -1,0 +1,69 @@
+node_modules/
+/.pnp/
+.pnp.js
+
+# dotenv files
+.env
+.env.*.local
+.env.local
+
+# build output
+/dist/
+/build/
+/out/
+/public/build/
+
+# vite cache
+node_modules/.vite/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+.turbo/
+.vercel/
+.cache/
+
+# coverage
+/coverage/
+.nyc_output/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor directories and files
+.idea/
+.vscode/
+.history/
+
+# prisma
+/.prisma/
+/prisma/migrations/
+
+# docker
+*.env.*
+docker-compose.override.yml
+
+# test output
+/junit-report.xml
+
+# temporary files
+*.tmp
+*.temp
+*.swp
+
+# generated client
+/node_modules/@prisma/client/
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+backend/.env
+frontend/.env
+.env
+.DS_Store
+coverage
