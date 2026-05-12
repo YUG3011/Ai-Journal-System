@@ -69,3 +69,8 @@ export async function getInsights() {
   const { data } = await api.get('/journal/insights');
   return data;
 }
+
+export async function registerFreeTrial(name, age) {
+  const { data } = await api.post('/free-trial', { name, age });
+  return data;
+}

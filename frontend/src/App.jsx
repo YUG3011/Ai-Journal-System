@@ -11,7 +11,7 @@ import HelpPage from './components/HelpPage';
 import {
   createJournal, getEntries, analyzeText, getInsights,
   login, register, deleteJournal, setAuthToken,
-  getGoogleAuthUrl, getGithubAuthUrl, getMe
+  getGoogleAuthUrl, getGithubAuthUrl, getMe, registerFreeTrial
 } from './services/api';
 
 function App() {
@@ -107,9 +107,21 @@ function App() {
   const handleTryFree = () => { setIsUsingFreeTrial(true); setInteractionCount(0); };
 
   const handleStartFreeTrial = (profile) => {
-    setIsUsingFreeTrial(true); setInteractionCount(0);
+    setIsUsingFreeTrial(true); 
+    setInteractionCount(0);
+    
+    // Store profile locally
     if (profile?.name || profile?.age) {
       localStorage.setItem('ai_journal_free_trial_profile', JSON.stringify({ name: profile?.name || '', age: profile?.age || null }));
+      
+      // Send to database
+      registerFreeTrial(profile.name, profile.age)
+        .then(() => {
+          console.log('Free trial registered successfully');
+        })
+        .catch((error) => {
+          console.error('Error registering free trial:', error);
+        });
     }
     setLoginPageLoading(false);
   };

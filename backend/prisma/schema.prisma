@@ -29,3 +29,10 @@ model User {
 
   @@index([provider, providerId])
 }
+
+model FreeTrial {
+  id        Int       @id @default(autoincrement())
+  name      String
+  age       Int
+  createdAt DateTime  @default(now())
+}
