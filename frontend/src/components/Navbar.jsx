@@ -22,6 +22,15 @@ export default function Navbar({ isAuthenticated, accountEmail, onLogout, onSign
   const dropdownRef = useRef(null);
   const remaining = Math.max(freeLimit - interactionCount, 0);
 
+  const getCounterColorClass = (rem) => {
+    if (rem >= 5) return 'counter-green';
+    if (rem === 4) return 'counter-light-green';
+    if (rem === 3) return 'counter-yellow';
+    if (rem === 2) return 'counter-orange';
+    if (rem === 1) return 'counter-red';
+    return 'counter-danger';
+  };
+
   const getDefaultName = () => accountEmail ? accountEmail.split('@')[0].replace(/\d+/g, '') : '';
   const [displayName, setDisplayName] = useState(localStorage.getItem(`ai_journal_display_name_${accountEmail}`) || getDefaultName());
 
@@ -87,9 +96,9 @@ export default function Navbar({ isAuthenticated, accountEmail, onLogout, onSign
       </div>
 
       {!isAuthenticated && (
-        <div className={`free-counter ${isFreeLimitExceeded ? 'exhausted' : ''}`}>
+        <div className={`free-counter ${getCounterColorClass(remaining)}`}>
           <span className="free-counter-bar" style={{ width: `${(remaining / freeLimit) * 100}%` }}></span>
-          <span className="free-counter-label">{remaining}/{freeLimit} free</span>
+          <span className="free-counter-label">{remaining}/{freeLimit} <span className="free-text">free</span></span>
         </div>
       )}
 
@@ -168,7 +177,7 @@ export default function Navbar({ isAuthenticated, accountEmail, onLogout, onSign
             )}
           </div>
         ) : (
-          <button className={`signin-btn ${isFreeLimitExceeded ? 'signin-btn-highlight' : ''}`} onClick={onSignIn}>
+          <button className={`signin-btn ${remaining === 0 ? 'signin-btn-highlight' : ''}`} onClick={onSignIn}>
             Sign In
           </button>
         )}

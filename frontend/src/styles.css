@@ -160,14 +160,34 @@ body {
   background: var(--surface); border: 1px solid var(--border);
   font-size: 11px; font-weight: 600; color: var(--text-muted);
   min-width: 90px;
+  transition: all 0.3s ease;
 }
-.free-counter.exhausted { border-color: rgba(239,68,68,0.4); color: var(--red); }
 .free-counter-bar {
   position: absolute; left: 0; top: 0; bottom: 0;
-  background: linear-gradient(90deg, rgba(99,102,241,0.2), rgba(99,102,241,0.05));
   transition: width 0.5s ease;
 }
-.free-counter-label { position: relative; z-index: 1; }
+.free-counter-label { position: relative; z-index: 1; display: inline-flex; gap: 3px; align-items: center; }
+
+/* Dynamic free counter colors */
+.counter-green { border-color: rgba(16,185,129,0.4); color: #10b981; }
+.counter-green .free-counter-bar { background: linear-gradient(90deg, rgba(16,185,129,0.2), rgba(16,185,129,0.05)); }
+
+.counter-light-green { border-color: rgba(132,204,22,0.4); color: #84cc16; }
+.counter-light-green .free-counter-bar { background: linear-gradient(90deg, rgba(132,204,22,0.2), rgba(132,204,22,0.05)); }
+
+.counter-yellow { border-color: rgba(234,179,8,0.4); color: #eab308; }
+.counter-yellow .free-counter-bar { background: linear-gradient(90deg, rgba(234,179,8,0.2), rgba(234,179,8,0.05)); }
+
+.counter-orange { border-color: rgba(249,115,22,0.4); color: #f97316; }
+.counter-orange .free-counter-bar { background: linear-gradient(90deg, rgba(249,115,22,0.2), rgba(249,115,22,0.05)); }
+
+.counter-red { border-color: rgba(239,68,68,0.4); color: #ef4444; }
+.counter-red .free-counter-bar { background: linear-gradient(90deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05)); }
+
+.counter-danger { border-color: rgba(220,38,38,0.6); color: #dc2626; animation: pulse-danger 2s infinite; }
+.counter-danger .free-counter-bar { background: linear-gradient(90deg, rgba(220,38,38,0.3), rgba(220,38,38,0.1)); }
+
+@keyframes pulse-danger { 0%,100%{box-shadow: 0 0 0 rgba(220,38,38,0);} 50%{box-shadow: 0 0 10px rgba(220,38,38,0.3);} }
 
 .icon-btn {
   width: 36px; height: 36px; border-radius: var(--radius-sm);
@@ -560,9 +580,12 @@ select option, .select option { background: #0d1425; color: var(--text); }
   .navbar-brand { gap: 4px; }
   .navbar-subtitle { display: none; }
   .brand-title-sm { font-size: 11px; letter-spacing: 0.1em; }
-  .navbar-actions { gap: 4px; }
+  .navbar-actions { gap: 6px; margin-right: 4px; }
   .signin-btn { padding: 5px 8px; font-size: 11px; min-width: max-content; }
-  .free-counter { min-width: 60px; padding: 3px 6px; font-size: 9px; }
+  
+  /* Shrink the counter further on mobile */
+  .free-counter { min-width: 0; padding: 3px 6px; font-size: 10px; }
+  .free-text { display: none; } /* Hides the word 'free' entirely on small screens */
   .icon-btn { width: 30px; height: 30px; }
 }
 
