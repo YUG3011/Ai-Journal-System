@@ -23,15 +23,15 @@ export default function Navbar({ isAuthenticated, accountEmail, onLogout, onSign
   const remaining = Math.max(freeLimit - interactionCount, 0);
 
   const getDefaultName = () => accountEmail ? accountEmail.split('@')[0].replace(/\d+/g, '') : '';
-  const [displayName, setDisplayName] = useState(localStorage.getItem('ai_journal_display_name') || getDefaultName());
+  const [displayName, setDisplayName] = useState(localStorage.getItem(`ai_journal_display_name_${accountEmail}`) || getDefaultName());
 
   useEffect(() => {
-    setDisplayName(localStorage.getItem('ai_journal_display_name') || getDefaultName());
+    setDisplayName(localStorage.getItem(`ai_journal_display_name_${accountEmail}`) || getDefaultName());
   }, [accountEmail]);
 
   useEffect(() => {
     const handleUpdate = () => {
-      setDisplayName(localStorage.getItem('ai_journal_display_name') || getDefaultName());
+      setDisplayName(localStorage.getItem(`ai_journal_display_name_${accountEmail}`) || getDefaultName());
     };
     window.addEventListener('profile-updated', handleUpdate);
     window.addEventListener('avatar-color-updated', handleUpdate);
@@ -48,7 +48,7 @@ export default function Navbar({ isAuthenticated, accountEmail, onLogout, onSign
     ['#f59e0b', '#ef4444'],
     ['#ec4899', '#8b5cf6'],
   ];
-  const [avatarColorIdx, setAvatarColorIdx] = useState(() => Number(localStorage.getItem('ai_journal_avatar_color') || 0));
+  const [avatarColorIdx, setAvatarColorIdx] = useState(() => Number(localStorage.getItem(`ai_journal_avatar_color_${accountEmail}`) || 0));
 
   useEffect(() => {
     function handleClick(e) {
@@ -60,16 +60,17 @@ export default function Navbar({ isAuthenticated, accountEmail, onLogout, onSign
 
   useEffect(() => {
     function handleAvatarColorUpdate() {
-      const nextIdx = Number(localStorage.getItem('ai_journal_avatar_color') || 0);
+      const nextIdx = Number(localStorage.getItem(`ai_journal_avatar_color_${accountEmail}`) || 0);
       setAvatarColorIdx(Number.isFinite(nextIdx) ? nextIdx : 0);
     }
+    handleAvatarColorUpdate();
     window.addEventListener('storage', handleAvatarColorUpdate);
     window.addEventListener('avatar-color-updated', handleAvatarColorUpdate);
     return () => {
       window.removeEventListener('storage', handleAvatarColorUpdate);
       window.removeEventListener('avatar-color-updated', handleAvatarColorUpdate);
     };
-  }, []);
+  }, [accountEmail]);
 
   const [avatarStart, avatarEnd] = avatarColors[avatarColorIdx] || avatarColors[0];
 

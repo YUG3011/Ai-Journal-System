@@ -2,9 +2,13 @@ import { useState } from 'react';
 
 export default function ProfilePage({ accountEmail, onBack, onNavigate }) {
   const username = accountEmail ? accountEmail.split('@')[0].replace(/\d+/g, '') : '';
-  const [displayName, setDisplayName] = useState(localStorage.getItem('ai_journal_display_name') || username);
+  const nameKey = `ai_journal_display_name_${accountEmail}`;
+  const bioKey = `ai_journal_bio_${accountEmail}`;
+  const colorKey = `ai_journal_avatar_color_${accountEmail}`;
+
+  const [displayName, setDisplayName] = useState(localStorage.getItem(nameKey) || username);
   const initial = displayName ? displayName[0].toUpperCase() : 'U';
-  const [bio, setBio] = useState(localStorage.getItem('ai_journal_bio') || '');
+  const [bio, setBio] = useState(localStorage.getItem(bioKey) || '');
   const [saved, setSaved] = useState(false);
 
   const avatarColors = [
@@ -14,13 +18,21 @@ export default function ProfilePage({ accountEmail, onBack, onNavigate }) {
     ['#f59e0b', '#ef4444'],
     ['#ec4899', '#8b5cf6'],
   ];
-  const savedColorIdx = Number(localStorage.getItem('ai_journal_avatar_color') || 0);
+  const savedColorIdx = Number(localStorage.getItem(colorKey) || 0);
   const [colorIdx, setColorIdx] = useState(savedColorIdx);
 
+  import('react').then(React => {
+    React.useEffect(() => {
+      setDisplayName(localStorage.getItem(nameKey) || username);
+      setBio(localStorage.getItem(bioKey) || '');
+      setColorIdx(Number(localStorage.getItem(colorKey) || 0));
+    }, [accountEmail, username, nameKey, bioKey, colorKey]);
+  });
+
   const handleSave = () => {
-    localStorage.setItem('ai_journal_bio', bio);
-    localStorage.setItem('ai_journal_display_name', displayName);
-    localStorage.setItem('ai_journal_avatar_color', colorIdx);
+    localStorage.setItem(bioKey, bio);
+    localStorage.setItem(nameKey, displayName);
+    localStorage.setItem(colorKey, colorIdx);
     window.dispatchEvent(new Event('profile-updated'));
     window.dispatchEvent(new Event('avatar-color-updated'));
     setSaved(true);
