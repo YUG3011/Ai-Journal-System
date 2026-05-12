@@ -76,7 +76,6 @@ export default function Navbar({ isAuthenticated, accountEmail, onLogout, onSign
 
   return (
     <nav className="navbar">
-      {/* Brand */}
       <div className="navbar-brand" onClick={() => onNavigate('home')} style={{ cursor: 'pointer' }}>
         <LogoMark size={36} />
         <div>
@@ -87,18 +86,19 @@ export default function Navbar({ isAuthenticated, accountEmail, onLogout, onSign
         </div>
       </div>
 
+      {!isAuthenticated && (
+        <div className={`free-counter ${isFreeLimitExceeded ? 'exhausted' : ''}`}>
+          <span className="free-counter-bar" style={{ width: `${(remaining / freeLimit) * 100}%` }}></span>
+          <span className="free-counter-label">{remaining}/{freeLimit} free</span>
+        </div>
+      )}
+
       {/* Center Status */}
       <div className="navbar-center">
       </div>
 
       {/* Right Actions */}
       <div className="navbar-actions">
-        {!isAuthenticated && (
-          <div className={`free-counter ${isFreeLimitExceeded ? 'exhausted' : ''}`}>
-            <span className="free-counter-bar" style={{ width: `${(remaining / freeLimit) * 100}%` }}></span>
-            <span className="free-counter-label">{remaining}/{freeLimit} free</span>
-          </div>
-        )}
 
         <button className="icon-btn" onClick={onThemeToggle} title="Toggle theme" aria-label="Toggle theme">
           {theme === 'dark'
