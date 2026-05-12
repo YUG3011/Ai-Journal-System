@@ -574,14 +574,16 @@ select option, .select option { background: #0d1425; color: var(--text); }
 @media (max-width: 768px) {
   .login-container { grid-template-columns: 1fr; gap: 32px; }
   .login-left { display: none; }
-  .navbar { padding: 0 8px; gap: 4px; }
-  .app-shell { padding: 0 8px 40px; }
   
-  .navbar-brand { gap: 4px; }
+  /* Fix the overflow by perfectly matching the app-shell padding and navbar margin */
+  .app-shell { padding: 0 16px 40px; }
+  .navbar { margin: 0 -16px 24px; padding: 0 16px; gap: 4px; }
+  
+  .navbar-brand { gap: 6px; }
   .navbar-subtitle { display: none; }
-  .brand-title-sm { font-size: 11px; letter-spacing: 0.1em; }
-  .navbar-actions { gap: 6px; margin-right: 4px; }
-  .signin-btn { padding: 5px 8px; font-size: 11px; min-width: max-content; }
+  .brand-title-sm { font-size: 12px; letter-spacing: 0.1em; }
+  .navbar-actions { gap: 8px; }
+  .signin-btn { padding: 6px 10px; font-size: 11px; min-width: max-content; }
   
   /* Shrink the counter further on mobile */
   .free-counter { min-width: 0; padding: 3px 6px; font-size: 10px; }
