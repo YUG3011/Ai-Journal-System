@@ -554,14 +554,16 @@ select option, .select option { background: #0d1425; color: var(--text); }
 @media (max-width: 768px) {
   .login-container { grid-template-columns: 1fr; gap: 32px; }
   .login-left { display: none; }
-  .navbar { padding: 0 12px; gap: 8px; }
-  .app-shell { padding: 0 12px 40px; }
+  .navbar { padding: 0 8px; gap: 4px; }
+  .app-shell { padding: 0 8px 40px; }
   
+  .navbar-brand { gap: 4px; }
   .navbar-subtitle { display: none; }
-  .brand-title-sm { font-size: 13px; }
-  .navbar-actions { gap: 6px; }
-  .signin-btn { padding: 6px 10px; font-size: 12px; }
-  .free-counter { min-width: 70px; padding: 4px 8px; font-size: 10px; }
+  .brand-title-sm { font-size: 11px; letter-spacing: 0.1em; }
+  .navbar-actions { gap: 4px; }
+  .signin-btn { padding: 5px 8px; font-size: 11px; min-width: max-content; }
+  .free-counter { min-width: 60px; padding: 3px 6px; font-size: 9px; }
+  .icon-btn { width: 30px; height: 30px; }
 }
 
 /* ── PAGE HEADERS ───────────────────────────────────── */
