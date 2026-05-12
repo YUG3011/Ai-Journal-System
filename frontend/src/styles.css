@@ -542,6 +542,13 @@ select option, .select option { background: #0d1425; color: var(--text); }
 .toggle-link { background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; font-family: var(--font); font-size: 13px; }
 .toggle-link:hover { color: var(--primary-light); text-decoration: underline; }
 .login-free-trial { margin-top: 12px; }
+.login-free-trial .try-without-account-text {
+  color: #fff !important;
+  opacity: 1 !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  text-shadow: 0 0 2px #000;
+}
 .free-trial-note { font-size: 11px; color: var(--text-faint); text-align: center; margin-top: 6px; }
 
 @media (max-width: 768px) {

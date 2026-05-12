@@ -251,7 +251,7 @@ export default function LoginPage({ onLogin, onTryFree, onSocial, error, isLoadi
                 <div className="login-free-trial">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '4px 0 8px', opacity: 0.45 }}>
                     <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
-                    <span style={{ fontSize: '11px', color: 'var(--text-faint)', whiteSpace: 'nowrap' }}>or try without an account</span>
+                    <span className="try-without-account-text" style={{ fontSize: '11px', whiteSpace: 'nowrap', color: '#ffffff', opacity: 1, fontWeight: 'bold' }}>or try without an account</span>
                     <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
                   </div>
                   <button
