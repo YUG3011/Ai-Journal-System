@@ -224,6 +224,7 @@ function App() {
   const handleLogout = () => {
     setIsAuthenticated(false); setAccountEmail(''); setUserId('');
     setInteractionCount(0); setAuthToken(null);
+    setAnalysis(null); setEntries([]); setInsights(null); setPage('home'); setError('');
     localStorage.removeItem('ai_journal_auth'); localStorage.removeItem('ai_journal_free_trial');
   };
 
