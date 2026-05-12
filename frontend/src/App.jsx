@@ -182,7 +182,7 @@ function App() {
         setInteractionCount(c => c + 1); return;
       }
       setAnalysis({ emotion: null, keywords: [], summary: '' });
-      const resp = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/journal/analyze/stream`, {
+      const resp = await fetch(`${import.meta.env.VITE_API_URL || 'https://ai-journal-system-1-8u7k.onrender.com/api'}/journal/analyze/stream`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text })
       });
       if (!resp.ok) throw new Error(await resp.text() || 'Streaming analyze failed');
