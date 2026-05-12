@@ -10,6 +10,8 @@ if (!apiKey) {
 
 let genAI = null;
 let model = null;
+let modelName = null;
+let fallbackModelName = null;
 
 const redisUrl = process.env.REDIS_URL || 'redis://redis:6379';
 let redisClient = null;
@@ -42,20 +44,39 @@ function ensureClient() {
   if (genAI && model) return;
   try {
     genAI = new GoogleGenerativeAI(apiKey || '');
-    const modelName = process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || 'models/text-bison-001';
+    modelName = process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || 'gemini-1.5-flash';
+    fallbackModelName = process.env.GEMINI_FALLBACK_MODEL || 'gemini-1.5-pro';
     model = genAI.getGenerativeModel({ model: modelName });
   } catch (e) {
     console.error('GoogleGenerativeAI lazy-init warning:', e && e.stack ? e.stack : (e.message || e));
     // show which envs are present (without printing the key)
     try {
       const hasKey = !!process.env.GEMINI_API_KEY;
-      const modelEnv = process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || null;
-      console.error('Env status: GEMINI_API_KEY present=', hasKey, 'GEMINI_MODEL=', modelEnv);
+      const primaryEnv = process.env.GEMINI_MODEL || process.env.GEMINI_MODEL_NAME || null;
+      const fallbackEnv = process.env.GEMINI_FALLBACK_MODEL || null;
+      console.error('Env status: GEMINI_API_KEY present=', hasKey, 'GEMINI_MODEL=', primaryEnv, 'GEMINI_FALLBACK_MODEL=', fallbackEnv);
     } catch (ee) {
       console.error('Error reading process.env for diagnostics', ee && ee.stack ? ee.stack : ee);
     }
     genAI = null;
     model = null;
+  }
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function generateWithRetry(activeModel, prompt) {
+  try {
+    return await activeModel.generateContent(prompt);
+  } catch (e) {
+    const status = e?.status;
+    const msg = e?.message || '';
+    const isBusy = status === 503 || status === 429 || msg.toLowerCase().includes('overload');
+    if (!isBusy) throw e;
+    await sleep(600);
+    return await activeModel.generateContent(prompt);
   }
 }
 
@@ -119,12 +140,40 @@ async function analyzeText(text) {
       err.status = 503;
       throw err;
     }
-    result = await model.generateContent(prompt);
+    result = await generateWithRetry(model, prompt);
   } catch (e) {
     // If Gemini fails with 404 (unsupported model) and OpenAI key is present, fallback to OpenAI
     const msg = e && (e.message || JSON.stringify(e));
     console.error('Gemini request error:', msg);
     const isNotFound = (e && (e.status === 404)) || (typeof msg === 'string' && msg.includes('404')) || (typeof msg === 'string' && msg.toLowerCase().includes('not found'));
+    const isBusy = (e && (e.status === 503 || e.status === 429)) || (typeof msg === 'string' && msg.toLowerCase().includes('overload'));
+
+    if (isBusy && genAI && fallbackModelName) {
+      try {
+        console.error(`Gemini busy (${e.status}). Falling back to ${fallbackModelName}.`);
+        const fallbackModel = genAI.getGenerativeModel({ model: fallbackModelName });
+        result = await generateWithRetry(fallbackModel, prompt);
+      } catch (fe) {
+        console.error('Fallback Gemini model failed:', fe && (fe.message || fe));
+      }
+    }
+
+    if (result) {
+      const responseText = result.response?.text();
+      if (!responseText) {
+        const err = new Error('Empty response from Gemini');
+        err.status = 502;
+        throw err;
+      }
+      const parsed = parseJsonFromText(responseText);
+      const normalized = {
+        emotion: parsed.emotion || null,
+        keywords: Array.isArray(parsed.keywords) ? parsed.keywords : [],
+        summary: parsed.summary || null
+      };
+      cache.set(key, normalized);
+      return { ...normalized, cached: false, fallback: 'gemini' };
+    }
     const openaiKey = process.env.OPENAI_API_KEY;
     if (isNotFound && openaiKey) {
       try {
@@ -160,7 +209,7 @@ async function analyzeText(text) {
       }
     }
 
-    const err = new Error('LLM request failed: ' + (e.message || 'unknown') + '. If using Google Gemini, ensure GEMINI_MODEL is set to a supported model for your account.');
+    const err = new Error('LLM request failed: ' + (e.message || 'unknown') + '. If using Google Gemini, ensure GEMINI_MODEL is set to a supported model and retry when the service is busy.');
     if (e.status) err.status = e.status;
     throw err;
   }
