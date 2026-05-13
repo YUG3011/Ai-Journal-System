@@ -240,7 +240,6 @@ function App() {
           onLogin={handleLoginFromPage} onTryFree={handleStartFreeTrial}
           onSocial={handleSocialLoginFromPage} error={loginError} isLoading={loginPageLoading}
         />
-        <Footer />
       </>
     );
   }
