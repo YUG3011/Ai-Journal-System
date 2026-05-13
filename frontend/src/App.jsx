@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import LoginPage from './components/LoginPage';
 import JournalForm from './components/JournalForm';
 import JournalList from './components/JournalList';
@@ -345,6 +346,7 @@ function App() {
         </div>
       )}
       <Footer />
+      <Analytics />
     </div>
   );
 }
