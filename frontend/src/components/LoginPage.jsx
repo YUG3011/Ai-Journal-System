@@ -261,7 +261,7 @@ export default function LoginPage({ onLogin, onTryFree, onSocial, error, isLoadi
                     disabled={isLoading}
                     style={{ marginBottom: 0 }}
                   >
-                    ✨ Try Free — 5 Interactions
+                     Try Free — 5 Interactions
                   </button>
                   <p className="free-trial-note" style={{ marginTop: '6px' }}>No account needed · Limited to 5 AI interactions</p>
                 </div>
