@@ -1,6 +1,7 @@
 const prisma = require('../config/db');
 const { analyzeText } = require('../services/llmService');
 const { calculateInsights } = require('../utils/insightsCalculator');
+const { generateEmotionInsightsPdf } = require('../utils/pdfGenerator');
 
 async function createEntry(req, res, next) {
   try {
@@ -28,6 +29,50 @@ async function createEntry(req, res, next) {
         summary: analysis?.summary || null
       }
     });
+
+    // Update Streak Logic
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (user) {
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+
+      let newStreak = user.currentStreak;
+      let maxStreak = user.longestStreak;
+      let activeDays = user.totalActiveDays;
+      let lastEntry = user.lastEntryDate;
+
+      if (lastEntry) {
+        const lastDate = new Date(lastEntry);
+        lastDate.setUTCHours(0, 0, 0, 0);
+        const diffTime = today.getTime() - lastDate.getTime();
+        const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
+
+        if (diffDays === 1) {
+          newStreak += 1;
+          activeDays += 1;
+        } else if (diffDays > 1) {
+          newStreak = 1;
+          activeDays += 1;
+        }
+      } else {
+        newStreak = 1;
+        activeDays = 1;
+      }
+
+      if (newStreak > maxStreak) {
+        maxStreak = newStreak;
+      }
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          currentStreak: newStreak,
+          longestStreak: maxStreak,
+          totalActiveDays: activeDays,
+          lastEntryDate: new Date()
+        }
+      });
+    }
 
     const payload = { entry };
     if (!analysis) payload.analysisError = 'Analysis unavailable (see server logs)';
@@ -146,11 +191,60 @@ async function deleteEntry(req, res, next) {
   }
 }
 
+async function exportPdf(req, res, next) {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+    const options = req.body;
+    
+    // Time filter logic
+    const whereClause = { userId, deletedAt: null };
+    if (options.timeFilter) {
+      const now = new Date();
+      if (options.timeFilter === 'today') {
+        const start = new Date(now.setHours(0,0,0,0));
+        whereClause.createdAt = { gte: start };
+      } else if (options.timeFilter === 'this_week') {
+        const start = new Date();
+        start.setDate(start.getDate() - 7);
+        whereClause.createdAt = { gte: start };
+      } else if (options.timeFilter === 'this_month') {
+        const start = new Date();
+        start.setMonth(start.getMonth() - 1);
+        whereClause.createdAt = { gte: start };
+      } else if (options.timeFilter === 'this_year') {
+        const start = new Date();
+        start.setFullYear(start.getFullYear() - 1);
+        whereClause.createdAt = { gte: start };
+      }
+    }
+
+    const [user, entries] = await Promise.all([
+      prisma.user.findUnique({ where: { id: userId } }),
+      prisma.journalEntry.findMany({ where: whereClause, orderBy: { createdAt: 'desc' } })
+    ]);
+
+    const pdfBuffer = await generateEmotionInsightsPdf(options, user, entries);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="Emotion_Insights.pdf"`,
+      'Content-Length': pdfBuffer.length
+    });
+    
+    res.send(pdfBuffer);
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   createEntry,
   getEntries,
   analyzeEntry,
   analyzeStream,
   getInsights,
-  deleteEntry
+  deleteEntry,
+  exportPdf
 };

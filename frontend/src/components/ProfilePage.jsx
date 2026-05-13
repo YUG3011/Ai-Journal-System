@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ProfilePage({ accountEmail, onBack, onNavigate }) {
+export default function ProfilePage({ accountEmail, userProfile, onBack, onNavigate, entries = [] }) {
   const username = accountEmail ? accountEmail.split('@')[0].replace(/\d+/g, '') : '';
   const nameKey = `ai_journal_display_name_${accountEmail}`;
   const bioKey = `ai_journal_bio_${accountEmail}`;
@@ -89,16 +89,26 @@ export default function ProfilePage({ accountEmail, onBack, onNavigate }) {
 
             <div className="account-stat-row">
               <div className="account-stat">
-                <div className="account-stat-val">—</div>
+                <div className="account-stat-val" style={{ color: 'var(--text)' }}>{entries.length || '—'}</div>
                 <div className="account-stat-label">Entries</div>
               </div>
-              <div className="account-stat">
-                <div className="account-stat-val">—</div>
-                <div className="account-stat-label">Streak</div>
+              <div className="account-stat" style={{ position: 'relative' }}>
+                <div className="account-stat-val" style={{ color: 'var(--primary)' }}>
+                  {userProfile?.currentStreak || 0} <span style={{ fontSize: 16 }}>🔥</span>
+                </div>
+                <div className="account-stat-label">Current Streak</div>
               </div>
               <div className="account-stat">
-                <div className="account-stat-val">—</div>
-                <div className="account-stat-label">Days</div>
+                <div className="account-stat-val" style={{ color: 'var(--green)' }}>
+                  {userProfile?.longestStreak || 0} <span style={{ fontSize: 16 }}>🏆</span>
+                </div>
+                <div className="account-stat-label">Longest Streak</div>
+              </div>
+              <div className="account-stat">
+                <div className="account-stat-val" style={{ color: 'var(--primary)' }}>
+                  {userProfile?.totalActiveDays || 0} <span style={{ fontSize: 16 }}>📅</span>
+                </div>
+                <div className="account-stat-label">Total Days</div>
               </div>
             </div>
           </div>

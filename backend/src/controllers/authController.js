@@ -173,7 +173,7 @@ async function me(req, res, next) {
   try {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: 'Unauthorized' });
-    const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, provider: true } });
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, provider: true, currentStreak: true, longestStreak: true, totalActiveDays: true, createdAt: true } });
     if (!user) return res.status(401).json({ error: 'Unauthorized' });
     return res.json({ user });
   } catch (err) {

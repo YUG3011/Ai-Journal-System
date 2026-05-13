@@ -25,6 +25,7 @@ function App() {
   const [interactionCount, setInteractionCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accountEmail, setAccountEmail] = useState('');
+  const [userProfile, setUserProfile] = useState(null);
   const [isUsingFreeTrial, setIsUsingFreeTrial] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [loginPageLoading, setLoginPageLoading] = useState(false);
@@ -84,7 +85,7 @@ function App() {
     (async () => {
       try {
         const { user } = await getMe();
-        setAccountEmail(user.email); setUserId(user.id); setIsAuthenticated(true);
+        setAccountEmail(user.email); setUserId(user.id); setIsAuthenticated(true); setUserProfile(user);
       } catch { setAuthToken(null); setIsAuthenticated(false); setAccountEmail(''); setUserId(''); }
     })();
   }, [accountEmail, userId]);
@@ -134,6 +135,7 @@ function App() {
       setAuthToken(authResponse.token);
       setIsAuthenticated(true); setAccountEmail(authResponse.user.email);
       setUserId(authResponse.user.id); setIsUsingFreeTrial(false);
+      setUserProfile(authResponse.user);
       setInteractionCount(0); setError('');
       await fetchData();
     } catch (err) {
@@ -155,6 +157,7 @@ function App() {
         if (!event.data?.token || !event.data?.user) return;
         setAuthToken(event.data.token); setIsAuthenticated(true);
         setAccountEmail(event.data.user.email); setUserId(event.data.user.id);
+        setUserProfile(event.data.user);
         setIsUsingFreeTrial(false); setInteractionCount(0);
         setError(''); setLoginError('');
         window.removeEventListener('message', listener);
@@ -258,7 +261,7 @@ function App() {
       {page === 'history' ? (
         <HistoryPage entries={entries} onBack={() => setPage('home')} onDelete={handleDelete} userId={userId} />
       ) : page === 'profile' ? (
-        <ProfilePage accountEmail={accountEmail} onBack={() => setPage('home')} onNavigate={setPage} />
+        <ProfilePage accountEmail={accountEmail} userProfile={userProfile} onBack={() => setPage('home')} onNavigate={setPage} entries={entries} />
       ) : page === 'settings' ? (
         <SettingsPage theme={theme} onThemeToggle={handleThemeToggle} onBack={() => setPage('home')} onLogout={handleLogout} />
       ) : page === 'help' ? (

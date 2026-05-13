@@ -6,7 +6,8 @@ const {
   analyzeEntry,
   analyzeStream,
   getInsights,
-  deleteEntry
+  deleteEntry,
+  exportPdf
 } = require('../controllers/journalController');
 const validate = require('../middleware/validate');
 const { requireAuth } = require('../middleware/auth');
@@ -45,6 +46,8 @@ router.post(
 router.post('/journal/analyze/stream', validate, analyzeStream);
 
 router.get('/journal/insights', requireAuth, getInsights);
+
+router.post('/journal/export-pdf', requireAuth, exportPdf);
 
 router.delete('/journal/:id', requireAuth, deleteEntry);
 

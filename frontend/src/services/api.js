@@ -74,3 +74,8 @@ export async function registerFreeTrial(name, age) {
   const { data } = await api.post('/free-trial', { name, age });
   return data;
 }
+
+export async function generatePdf(options) {
+  const { data } = await api.post('/journal/export-pdf', options, { responseType: 'blob' });
+  return data;
+}
