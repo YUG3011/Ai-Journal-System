@@ -81,7 +81,7 @@ export default function HelpPage({ onBack }) {
           <div style={{ fontWeight: 700, fontSize: 15 }}>Still need help?</div>
           <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>Reach out and we'll get back to you.</div>
         </div>
-        <a href="mailto:support@reflectai.app" className="btn btn-primary" style={{ textDecoration: 'none' }}>
+        <a href="mailto:yug30112005@gmail.com?subject=R%CE%9EflectAI%20Support%20Request&body=Hello%20Yug%2C%0A%0AI%20am%20using%20the%20R%CE%9EflectAI%20platform%20and%20would%20like%20to%20reach%20out%20regarding..." className="btn btn-primary" style={{ textDecoration: 'none' }}>
           Contact Support
         </a>
       </div>
