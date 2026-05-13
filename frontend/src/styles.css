@@ -605,11 +605,24 @@ select option, .select option { background: #0d1425; color: var(--text); }
 .account-card-right { display: flex; flex-direction: column; gap: 18px; }
 @media (max-width: 760px) { .account-layout { grid-template-columns: 1fr; } }
 
-.account-stat-row { display: flex; gap: 0; width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
-.account-stat { flex: 1; text-align: center; padding: 10px 6px; border-right: 1px solid var(--border); }
-.account-stat:last-child { border-right: none; }
-.account-stat-val { font-weight: 700; font-size: 16px; color: var(--text); }
-.account-stat-label { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.account-stat-row { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  width: 100%; 
+  border: 1px solid var(--border); 
+  border-radius: var(--radius-sm); 
+  overflow: hidden; 
+}
+.account-stat { 
+  text-align: center; 
+  padding: 16px 10px; 
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+.account-stat:nth-child(2n) { border-right: none; }
+.account-stat:nth-last-child(-n+2) { border-bottom: none; }
+.account-stat-val { font-weight: 700; font-size: 18px; color: var(--text); }
+.account-stat-label { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
 
 /* ── SETTINGS COMPONENTS ────────────────────────────── */
 .settings-grid { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 16px; }
@@ -736,6 +749,10 @@ select option, .select option { background: #0d1425; color: var(--text); }
 
 .footer-group ul li a:hover {
   color: var(--primary);
+}
+
+.footer-contact a:hover {
+  color: var(--primary) !important;
 }
 
 .footer-bottom {
