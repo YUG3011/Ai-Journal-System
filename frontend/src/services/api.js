@@ -79,3 +79,8 @@ export async function generatePdf(options) {
   const { data } = await api.post('/journal/export-pdf', options, { responseType: 'blob' });
   return data;
 }
+
+export async function submitSupportTicket(payload) {
+  const { data } = await api.post('/support', payload);
+  return data;
+}

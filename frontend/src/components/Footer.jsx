@@ -10,10 +10,10 @@ export default function Footer() {
           </div>
           <p className="footer-tagline">Your intelligent companion for emotional growth and self-reflection.</p>
           <div className="footer-contact" style={{ marginTop: '20px', fontSize: '14px', color: 'var(--text-muted)' }}>
-            <a href="mailto:yug30112005@gmail.com?subject=R%CE%9EflectAI%20Support%20Request&body=Hello%20Yug%2C%0A%0AI%20am%20using%20the%20R%CE%9EflectAI%20platform%20and%20would%20like%20to%20reach%20out%20regarding..." style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'inherit', textDecoration: 'none' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EA4335" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               yug30112005@gmail.com
-            </a>
+            </div>
           </div>
         </div>
         
@@ -95,9 +95,6 @@ export default function Footer() {
           </a>
           <a href="https://x.com/YugPatel881913" target="_blank" rel="noopener noreferrer" aria-label="Twitter (X)">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#ffffff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
-          <a href="mailto:yug30112005@gmail.com?subject=R%CE%9EflectAI%20Support%20Request&body=Hello%20Yug%2C%0A%0AI%20am%20using%20the%20R%CE%9EflectAI%20platform%20and%20would%20like%20to%20reach%20out%20regarding..." aria-label="Gmail">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EA4335" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           </a>
         </div>
       </div>

@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const journalRoutes = require('./routes/journalRoutes');
 const authRoutes = require('./routes/authRoutes');
 const freeTrialRoutes = require('./routes/freeTrialRoutes');
+const supportRoutes = require('./routes/supportRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -31,6 +32,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api', journalRoutes);
 app.use('/api', freeTrialRoutes);
+app.use('/api', supportRoutes);
 
 // Global error handler (must be last)
 app.use(errorHandler);
