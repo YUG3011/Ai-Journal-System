@@ -1,5 +1,6 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const axios = require('axios');
 
 const COLORS = {
   textPrimary: '#111827',
@@ -20,6 +21,24 @@ const COLORS = {
   streakBg: '#FFFBEB'
 };
 
+// Font cache to prevent repeated downloads
+let fontRegularBuffer = null;
+let fontBoldBuffer = null;
+
+async function loadFonts() {
+  if (fontRegularBuffer && fontBoldBuffer) return;
+  try {
+    const [reg, bold] = await Promise.all([
+      axios.get('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf', { responseType: 'arraybuffer' }),
+      axios.get('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf', { responseType: 'arraybuffer' })
+    ]);
+    fontRegularBuffer = Buffer.from(reg.data);
+    fontBoldBuffer = Buffer.from(bold.data);
+  } catch (err) {
+    console.error('Failed to load Unicode fonts:', err.message);
+  }
+}
+
 function getAccentColor(ambience) {
   if (ambience === 'forest') return { accent: COLORS.forest, bg: COLORS.forestBg, label: 'Forest' };
   if (ambience === 'ocean') return { accent: COLORS.ocean, bg: COLORS.oceanBg, label: 'Ocean' };
@@ -34,11 +53,20 @@ function drawRoundedRect(doc, x, y, w, h, r, fillColor, strokeColor) {
 async function generateEmotionInsightsPdf(options, user, entries) {
   return new Promise(async (resolve, reject) => {
     try {
+      await loadFonts();
+      
       const doc = new PDFDocument({ margin: 0, size: 'A4', bufferPages: true });
       const chunks = [];
       doc.on('data', chunk => chunks.push(chunk));
       doc.on('end', () => resolve(Buffer.concat(chunks)));
       doc.on('error', err => reject(err));
+
+      // Register and set Unicode fonts
+      if (fontRegularBuffer && fontBoldBuffer) {
+        doc.registerFont('CustomRegular', fontRegularBuffer);
+        doc.registerFont('CustomBold', fontBoldBuffer);
+        doc.font('CustomRegular');
+      }
 
       const pageWidth = doc.page.width;
       const margin = 50;
@@ -79,7 +107,7 @@ async function generateEmotionInsightsPdf(options, user, entries) {
         doc.image(logoPath, margin, startY, { fit: [contentWidth, 60], align: 'center' });
         doc.y = startY + 60 + 15;
       } else {
-        doc.fontSize(28).font('Helvetica-Bold').fillColor(COLORS.textPrimary).text('ReflectAI', margin, startY, { align: 'center' });
+        doc.fontSize(28).font('CustomBold').fillColor(COLORS.textPrimary).text('RΞflectAI', margin, startY, { align: 'center' });
       }
       
       const timeFilterMap = {
@@ -90,7 +118,7 @@ async function generateEmotionInsightsPdf(options, user, entries) {
       };
       const timeRangeText = timeFilterMap[options.timeFilter] || 'All Time';
       
-      doc.fontSize(14).font('Helvetica').fillColor(COLORS.textSecondary).text('Emotion Insights Report', { align: 'center' });
+      doc.fontSize(14).font('CustomRegular').fillColor(COLORS.textSecondary).text('Emotion Insights Report', { align: 'center' });
       doc.moveDown(0.5);
       doc.fontSize(10).fillColor(COLORS.textMuted).text(`${timeRangeText}  •  Generated on ${new Date().toLocaleDateString()}`, { align: 'center' });
       
@@ -100,8 +128,8 @@ async function generateEmotionInsightsPdf(options, user, entries) {
       const heroHeight = 110;
       drawRoundedRect(doc, margin, currentY, contentWidth, heroHeight, 12, theme.bg, theme.accent);
       
-      doc.fontSize(14).font('Helvetica-Bold').fillColor(theme.accent).text('Dominant Emotion', margin + 20, currentY + 20);
-      doc.fontSize(26).font('Helvetica-Bold').fillColor(COLORS.textPrimary).text(`${theme.label} ${mostCommonEmotion.charAt(0).toUpperCase() + mostCommonEmotion.slice(1)}`, margin + 20, currentY + 45);
+      doc.fontSize(14).font('CustomBold').fillColor(theme.accent).text('Dominant Emotion', margin + 20, currentY + 20);
+      doc.fontSize(26).font('CustomBold').fillColor(COLORS.textPrimary).text(`${theme.label} ${mostCommonEmotion.charAt(0).toUpperCase() + mostCommonEmotion.slice(1)}`, margin + 20, currentY + 45);
       
       currentY += heroHeight + 20;
 
@@ -111,24 +139,24 @@ async function generateEmotionInsightsPdf(options, user, entries) {
 
       // Total Entries
       drawRoundedRect(doc, margin, currentY, statCardWidth, statCardHeight, 8, COLORS.cardBg, COLORS.cardBorder);
-      doc.fontSize(12).font('Helvetica').fillColor(COLORS.textSecondary).text('Total Entries', margin + 15, currentY + 15);
-      doc.fontSize(22).font('Helvetica-Bold').fillColor(COLORS.textPrimary).text(totalEntries.toString(), margin + 15, currentY + 35);
+      doc.fontSize(12).font('CustomRegular').fillColor(COLORS.textSecondary).text('Total Entries', margin + 15, currentY + 15);
+      doc.fontSize(22).font('CustomBold').fillColor(COLORS.textPrimary).text(totalEntries.toString(), margin + 15, currentY + 35);
 
       // Current Streak
       drawRoundedRect(doc, margin + statCardWidth + 10, currentY, statCardWidth, statCardHeight, 8, COLORS.cardBg, COLORS.cardBorder);
-      doc.fontSize(12).font('Helvetica').fillColor(COLORS.textSecondary).text('Current Streak', margin + statCardWidth + 25, currentY + 15);
-      doc.fontSize(22).font('Helvetica-Bold').fillColor(COLORS.streak).text(`${user?.currentStreak || 0}`, margin + statCardWidth + 25, currentY + 35);
+      doc.fontSize(12).font('CustomRegular').fillColor(COLORS.textSecondary).text('Current Streak', margin + statCardWidth + 25, currentY + 15);
+      doc.fontSize(22).font('CustomBold').fillColor(COLORS.streak).text(`${user?.currentStreak || 0}`, margin + statCardWidth + 25, currentY + 35);
 
       // Active Days
       drawRoundedRect(doc, margin + (statCardWidth + 10) * 2, currentY, statCardWidth, statCardHeight, 8, COLORS.cardBg, COLORS.cardBorder);
-      doc.fontSize(12).font('Helvetica').fillColor(COLORS.textSecondary).text('Active Days', margin + (statCardWidth + 10) * 2 + 15, currentY + 15);
-      doc.fontSize(22).font('Helvetica-Bold').fillColor(theme.accent).text(`${user?.totalActiveDays || 0}`, margin + (statCardWidth + 10) * 2 + 15, currentY + 35);
+      doc.fontSize(12).font('CustomRegular').fillColor(COLORS.textSecondary).text('Active Days', margin + (statCardWidth + 10) * 2 + 15, currentY + 15);
+      doc.fontSize(22).font('CustomBold').fillColor(theme.accent).text(`${user?.totalActiveDays || 0}`, margin + (statCardWidth + 10) * 2 + 15, currentY + 35);
 
       currentY += statCardHeight + 30;
 
       // Helper for Section Titles
       const drawSectionTitle = (title, y) => {
-        doc.fontSize(16).font('Helvetica-Bold').fillColor(COLORS.textPrimary).text(title, margin, y);
+        doc.fontSize(16).font('CustomBold').fillColor(COLORS.textPrimary).text(title, margin, y);
         return y + 25;
       };
 
@@ -154,7 +182,7 @@ async function generateEmotionInsightsPdf(options, user, entries) {
 
         const insightHeight = 90;
         drawRoundedRect(doc, margin, currentY, contentWidth, insightHeight, 8, COLORS.defaultBg, COLORS.defaultAccent);
-        doc.fontSize(14).font('Helvetica-Oblique').fillColor(COLORS.textPrimary)
+        doc.fontSize(14).font('CustomRegular').fillColor(COLORS.textPrimary)
            .text(`"${aiInsightText}"`, margin + 20, currentY + 25, { width: contentWidth - 40, align: 'center', lineGap: 4 });
         
         currentY += insightHeight + 30;
@@ -219,15 +247,15 @@ async function generateEmotionInsightsPdf(options, user, entries) {
         
         const colWidth = contentWidth / 3;
         
-        doc.fontSize(12).font('Helvetica').fillColor(COLORS.textSecondary).text('Current Streak', margin + 20, currentY + 20);
-        doc.fontSize(20).font('Helvetica-Bold').fillColor(COLORS.streak).text(`${user.currentStreak} Days`, margin + 20, currentY + 45);
+        doc.fontSize(12).font('CustomRegular').fillColor(COLORS.textSecondary).text('Current Streak', margin + 20, currentY + 20);
+        doc.fontSize(20).font('CustomBold').fillColor(COLORS.streak).text(`${user.currentStreak} Days`, margin + 20, currentY + 45);
 
-        doc.fontSize(12).font('Helvetica').fillColor(COLORS.textSecondary).text('Longest Streak', margin + colWidth + 20, currentY + 20);
-        doc.fontSize(20).font('Helvetica-Bold').fillColor(theme.accent).text(`${user.longestStreak} Days`, margin + colWidth + 20, currentY + 45);
+        doc.fontSize(12).font('CustomRegular').fillColor(COLORS.textSecondary).text('Longest Streak', margin + colWidth + 20, currentY + 20);
+        doc.fontSize(20).font('CustomBold').fillColor(theme.accent).text(`${user.longestStreak} Days`, margin + colWidth + 20, currentY + 45);
 
         const score = totalEntries > 0 ? Math.min(100, Math.round((user.currentStreak / 7) * 100)) : 0;
-        doc.fontSize(12).font('Helvetica').fillColor(COLORS.textSecondary).text('Weekly Consistency', margin + colWidth * 2 + 20, currentY + 20);
-        doc.fontSize(20).font('Helvetica-Bold').fillColor(COLORS.textPrimary).text(`${score}%`, margin + colWidth * 2 + 20, currentY + 45);
+        doc.fontSize(12).font('CustomRegular').fillColor(COLORS.textSecondary).text('Weekly Consistency', margin + colWidth * 2 + 20, currentY + 20);
+        doc.fontSize(20).font('CustomBold').fillColor(COLORS.textPrimary).text(`${score}%`, margin + colWidth * 2 + 20, currentY + 45);
 
         currentY += streakCardHeight + 30;
       }
@@ -246,13 +274,13 @@ async function generateEmotionInsightsPdf(options, user, entries) {
           const dateStr = new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
           const emotion = entry.emotion ? entry.emotion.charAt(0).toUpperCase() + entry.emotion.slice(1) : 'Unknown';
           
-          doc.fontSize(10).font('Helvetica-Bold').fillColor(theme.accent).text(dateStr, margin + 20, currentY + 15);
-          doc.fontSize(12).font('Helvetica-Bold').fillColor(COLORS.textPrimary).text(`Emotion: ${emotion}`, margin + 150, currentY + 15);
+          doc.fontSize(10).font('CustomBold').fillColor(theme.accent).text(dateStr, margin + 20, currentY + 15);
+          doc.fontSize(12).font('CustomBold').fillColor(COLORS.textPrimary).text(`Emotion: ${emotion}`, margin + 150, currentY + 15);
           
           let preview = entry.text.replace(/\n/g, ' ').trim();
           if (preview.length > 120) preview = preview.substring(0, 120) + '...';
           
-          doc.fontSize(11).font('Helvetica').fillColor(COLORS.textSecondary).text(`"${preview}"`, margin + 20, currentY + 40, { width: contentWidth - 40, lineGap: 2 });
+          doc.fontSize(11).font('CustomRegular').fillColor(COLORS.textSecondary).text(`"${preview}"`, margin + 20, currentY + 40, { width: contentWidth - 40, lineGap: 2 });
           
           currentY += entryHeight + 15;
         });
@@ -262,7 +290,7 @@ async function generateEmotionInsightsPdf(options, user, entries) {
       const pages = doc.bufferedPageRange();
       for (let i = 0; i < pages.count; i++) {
         doc.switchToPage(i);
-        doc.fontSize(10).font('Helvetica').fillColor(COLORS.textMuted)
+        doc.fontSize(10).font('CustomRegular').fillColor(COLORS.textMuted)
            .text('Generated by RΞflectAI Analytics  •  Take a deep breath and keep reflecting.', margin, doc.page.height - 40, { align: 'center', width: contentWidth });
       }
 
