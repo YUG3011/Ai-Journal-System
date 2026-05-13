@@ -296,7 +296,7 @@ function App() {
           <div className="grid">
             <section className="card card-strong">
               <div className="section-title">New Entry</div>
-              <JournalForm userId={userId} onSubmit={handleSubmit} onAnalyze={handleAnalyze} isFreeLimitExceeded={isFreeLimitExceeded} />
+              <JournalForm userId={userId} onSubmit={handleSubmit} onAnalyze={handleAnalyze} isFreeLimitExceeded={isFreeLimitExceeded} isAnalyzing={isAnalyzing} />
             </section>
 
             <section className={`card ${analysis?.cached ? 'card-cache-hit' : ''}`}>

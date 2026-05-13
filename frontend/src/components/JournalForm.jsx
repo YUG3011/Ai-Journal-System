@@ -3,7 +3,7 @@ import AnalyzeButton from './AnalyzeButton';
 import PdfExportModal from './PdfExportModal';
 import { generatePdf } from '../services/api';
 
-export default function JournalForm({ userId, onSubmit, onAnalyze, isFreeLimitExceeded }) {
+export default function JournalForm({ userId, onSubmit, onAnalyze, isFreeLimitExceeded, isAnalyzing }) {
   const [text, setText] = useState('');
   const [ambience, setAmbience] = useState('forest');
   const [error, setError] = useState('');
@@ -88,9 +88,14 @@ export default function JournalForm({ userId, onSubmit, onAnalyze, isFreeLimitEx
             className="btn btn-primary" 
             type="button" 
             onClick={() => onAnalyze(text, true)}
-            disabled={!text.trim()}
+            disabled={!text.trim() || isAnalyzing}
           >
-            Analyze Emotion
+            {isAnalyzing ? (
+              <>
+                <span className="btn-spinner" aria-hidden="true" style={{ marginRight: '8px' }}></span>
+                Analyzing...
+              </>
+            ) : 'Analyze Emotion'}
           </button>
         ) : (
           <button
