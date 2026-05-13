@@ -33,6 +33,7 @@ function App() {
   const [loginError, setLoginError] = useState('');
   const [theme, setTheme] = useState('dark');
   const [page, setPage] = useState('home');
+  const [compactMode, setCompactMode] = useState(localStorage.getItem('ai_journal_compact') === 'true');
 
   const FREE_INTERACTIONS = 5;
 
@@ -40,6 +41,11 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (compactMode) document.body.classList.add('compact-mode');
+    else document.body.classList.remove('compact-mode');
+  }, [compactMode]);
 
   const handleThemeToggle = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
@@ -264,7 +270,14 @@ function App() {
       ) : page === 'profile' ? (
         <ProfilePage accountEmail={accountEmail} userProfile={userProfile} onBack={() => setPage('home')} onNavigate={setPage} entries={entries} />
       ) : page === 'settings' ? (
-        <SettingsPage theme={theme} onThemeToggle={handleThemeToggle} onBack={() => setPage('home')} onLogout={handleLogout} />
+        <SettingsPage 
+          theme={theme} 
+          onThemeToggle={handleThemeToggle} 
+          onBack={() => setPage('home')} 
+          onLogout={handleLogout}
+          compactMode={compactMode}
+          onCompactToggle={() => setCompactMode(!compactMode)}
+        />
       ) : page === 'help' ? (
         <HelpPage onBack={() => setPage('home')} />
       ) : (

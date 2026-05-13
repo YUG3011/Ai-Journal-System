@@ -801,4 +801,14 @@ select option, .select option { background: #0d1425; color: var(--text); }
   }
 }
 
-
+/* ── COMPACT MODE ──────────────────────────────────── */
+body.compact-mode .app-shell { padding-bottom: 20px; }
+body.compact-mode .navbar { margin-bottom: 16px; }
+body.compact-mode .card { padding: 14px; border-radius: var(--radius); }
+body.compact-mode .section-title { margin-bottom: 10px; font-size: 14px; }
+body.compact-mode .grid { gap: 12px; margin-bottom: 12px; }
+body.compact-mode .list { gap: 10px; }
+body.compact-mode .entry-card { padding: 12px; }
+body.compact-mode .page-header { margin-bottom: 16px; }
+body.compact-mode .account-stat { padding: 8px 4px; }
+body.compact-mode .footer { padding: 40px 20px 20px; margin-top: 30px; }

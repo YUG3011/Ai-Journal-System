@@ -18,16 +18,13 @@ function Toggle({ value, onChange, label, description }) {
   );
 }
 
-export default function SettingsPage({ theme, onThemeToggle, onBack, onLogout }) {
+export default function SettingsPage({ theme, onThemeToggle, onBack, onLogout, compactMode, onCompactToggle }) {
   const isDark = theme === 'dark';
   const [notifications, setNotifications] = useState(
     localStorage.getItem('ai_journal_notifs') !== 'false'
   );
   const [autoAnalyze, setAutoAnalyze] = useState(
     localStorage.getItem('ai_journal_auto_analyze') === 'true'
-  );
-  const [compactMode, setCompactMode] = useState(
-    localStorage.getItem('ai_journal_compact') === 'true'
   );
   const [saved, setSaved] = useState(false);
 
@@ -81,7 +78,7 @@ export default function SettingsPage({ theme, onThemeToggle, onBack, onLogout })
 
           <Toggle
             value={compactMode}
-            onChange={setCompactMode}
+            onChange={onCompactToggle}
             label="Compact Mode"
             description="Show more content with reduced spacing"
           />
