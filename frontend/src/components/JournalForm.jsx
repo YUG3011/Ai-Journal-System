@@ -28,7 +28,7 @@ export default function JournalForm({ userId, onSubmit, onAnalyze, isFreeLimitEx
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (!text.trim()) {
       setError('Please enter some text before saving.');
       return;
@@ -43,7 +43,7 @@ export default function JournalForm({ userId, onSubmit, onAnalyze, isFreeLimitEx
   };
 
   return (
-    <form onSubmit={handleSubmit} className="form">
+    <form onSubmit={(e) => e.preventDefault()} className="form">
       <div>
         <div className="label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           Ambience
@@ -82,10 +82,29 @@ export default function JournalForm({ userId, onSubmit, onAnalyze, isFreeLimitEx
         {error && <div className="error" style={{color: '#ff6b6b', marginTop: '8px'}}>{error}</div>}
       </div>
       <div className="actions">
-        {!isFreeLimitExceeded && (
-          <button className="btn btn-primary" type="submit">Save Entry</button>
+        {/* Analyze Button (now in Purple) */}
+        {!isFreeLimitExceeded ? (
+          <button 
+            className="btn btn-primary" 
+            type="button" 
+            onClick={() => onAnalyze(text, true)}
+            disabled={!text.trim()}
+          >
+            Analyze Emotion
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={true}
+            style={{ opacity: 0.7, cursor: 'not-allowed' }}
+          >
+            Login to analyze
+          </button>
         )}
-        <AnalyzeButton disabled={!text.trim()} onAnalyze={() => onAnalyze(text, true)} isFreeLimitExceeded={isFreeLimitExceeded} />
+
+        {/* Save Button (now in Glass/Ghost) */}
+        <AnalyzeButton disabled={!text.trim()} onAnalyze={handleSubmit} />
         
         <button 
           type="button" 

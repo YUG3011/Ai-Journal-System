@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function AnalyzeButton({ onAnalyze, disabled, isFreeLimitExceeded }) {
+export default function AnalyzeButton({ onAnalyze, disabled }) {
   const [loading, setLoading] = useState(false);
   const handleClick = async () => {
     setLoading(true);
@@ -10,19 +10,6 @@ export default function AnalyzeButton({ onAnalyze, disabled, isFreeLimitExceeded
       setLoading(false);
     }
   };
-
-  if (isFreeLimitExceeded) {
-    return (
-      <button
-        type="button"
-        className="btn btn-ghost"
-        disabled={true}
-        style={{ color: '#ff6b6b', borderColor: '#ff6b6b' }}
-      >
-        Login First to do more thing
-      </button>
-    );
-  }
 
   return (
     <button
@@ -34,10 +21,10 @@ export default function AnalyzeButton({ onAnalyze, disabled, isFreeLimitExceeded
       {loading ? (
         <>
           <span className="btn-spinner" aria-hidden="true"></span>
-          Running...
+          Saving...
         </>
       ) : (
-        'Analyze Emotion'
+        'Save Entry'
       )}
     </button>
   );
