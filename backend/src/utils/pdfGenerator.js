@@ -1,4 +1,5 @@
 const PDFDocument = require('pdfkit');
+const fs = require('fs');
 
 const COLORS = {
   textPrimary: '#111827',
@@ -71,8 +72,15 @@ async function generateEmotionInsightsPdf(options, user, entries) {
       const theme = getAccentColor(mostCommonAmbience);
 
       // --- HEADER SECTION ---
-      let startY = 50;
-      doc.fontSize(28).font('Helvetica-Bold').fillColor(COLORS.textPrimary).text('ReflectAI', margin, startY, { align: 'center' });
+      let startY = 40;
+      
+      const logoPath = 'C:\\Users\\HP\\.gemini\\antigravity\\brain\\b3bb8c7a-77fa-4654-a593-908b04012544\\media__1778663028808.jpg';
+      if (fs.existsSync(logoPath)) {
+        doc.image(logoPath, margin, startY, { fit: [contentWidth, 60], align: 'center' });
+        doc.y = startY + 60 + 15;
+      } else {
+        doc.fontSize(28).font('Helvetica-Bold').fillColor(COLORS.textPrimary).text('ReflectAI', margin, startY, { align: 'center' });
+      }
       
       const timeFilterMap = {
         today: 'Today\'s Report',
