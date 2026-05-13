@@ -670,3 +670,118 @@ select option, .select option { background: #0d1425; color: var(--text); }
 .btn-danger:hover:not(:disabled) { background: rgba(239,68,68,0.1); }
 .btn-danger:disabled { opacity: 0.4; cursor: not-allowed; }
 
+/* --- FOOTER SECTION --- */
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 60px 20px 30px;
+  margin-top: 60px;
+  color: var(--text);
+  font-family: var(--font);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+}
+
+.footer-brand .brand-title {
+  font-size: 20px;
+  margin-bottom: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.footer-tagline {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.footer-group h4 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--primary-light);
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.footer-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-group ul li {
+  margin-bottom: 12px;
+}
+
+.footer-group ul li a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.footer-group ul li a:hover {
+  color: var(--primary);
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 60px auto 0;
+  padding-top: 30px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+.social-links {
+  display: flex;
+  gap: 20px;
+}
+
+.social-links a {
+  text-decoration: none;
+  font-size: 18px;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.social-links a:hover {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .footer-links {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}
+
+

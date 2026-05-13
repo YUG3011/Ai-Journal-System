@@ -8,6 +8,7 @@ import HistoryPage from './components/HistoryPage';
 import ProfilePage from './components/ProfilePage';
 import SettingsPage from './components/SettingsPage';
 import HelpPage from './components/HelpPage';
+import Footer from './components/Footer';
 import {
   createJournal, getEntries, analyzeText, getInsights,
   login, register, deleteJournal, setAuthToken,
@@ -239,6 +240,7 @@ function App() {
           onLogin={handleLoginFromPage} onTryFree={handleStartFreeTrial}
           onSocial={handleSocialLoginFromPage} error={loginError} isLoading={loginPageLoading}
         />
+        <Footer />
       </>
     );
   }
@@ -330,6 +332,7 @@ function App() {
           </section>
         </div>
       )}
+      <Footer />
     </div>
   );
 }
