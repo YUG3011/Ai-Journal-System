@@ -60,7 +60,7 @@ export default function SettingsPage({ theme, onThemeToggle, onBack, onLogout })
         </button>
         <div>
           <h1 className="page-title">Settings</h1>
-          <p className="page-subtitle">Customize your ReflectAI experience</p>
+          <p className="page-subtitle">Customize your RΞflectAI experience</p>
         </div>
       </div>
 

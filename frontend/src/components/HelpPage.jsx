@@ -30,7 +30,7 @@ function FaqItem({ q, a }) {
 
 export default function HelpPage({ onBack }) {
   const faqs = [
-    { q: 'How does the emotion analysis work?', a: 'ReflectAI uses a large language model (LLM) to analyze the text you write and detect the dominant emotion, extract keywords, and generate a brief summary.' },
+    { q: 'How does the emotion analysis work?', a: 'RΞflectAI uses a large language model (LLM) to analyze the text you write and detect the dominant emotion, extract keywords, and generate a brief summary.' },
     { q: 'Is my journal data private?', a: 'Yes. Your entries are stored securely on the server and are only accessible to your account. We do not share your data with third parties.' },
     { q: 'What are the free interactions?', a: 'Without an account you get 5 free emotion analyses. After that, you need to create an account (free) to continue.' },
     { q: 'What ambience options mean?', a: 'Ambience sets the mood context for your entry — 🌲 Forest (grounded & calm), 🌊 Ocean (flowing & open), ⛰️ Mountain (focused & determined).' },
@@ -47,7 +47,7 @@ export default function HelpPage({ onBack }) {
         </button>
         <div>
           <h1 className="page-title">Help & FAQ</h1>
-          <p className="page-subtitle">Answers to common questions about ReflectAI</p>
+          <p className="page-subtitle">Answers to common questions about RΞflectAI</p>
         </div>
       </div>
 
