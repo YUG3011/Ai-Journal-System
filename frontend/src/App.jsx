@@ -266,6 +266,24 @@ function App() {
         onNavigate={setPage}
       />
 
+      {!isAuthenticated && isUsingFreeTrial && (
+        <div className="app-shell" style={{ paddingBottom: 0, marginBottom: -10 }}>
+          {!isFreeLimitExceeded ? (
+            <div className="trial-banner">
+              ✨ This is your first 5 free interactions. If you want to use more features, please 
+              <span className="trial-login-link" onClick={() => setIsUsingFreeTrial(false)}>login</span>
+            </div>
+          ) : (
+            <div className="limit-banner">
+              ⚠️ You've used all 5 free interactions.
+              <button className="signin-btn" style={{ marginLeft: 'auto' }} onClick={() => setIsUsingFreeTrial(false)}>
+                Sign In to Continue
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {page === 'history' ? (
         <HistoryPage entries={entries} onBack={() => setPage('home')} onDelete={handleDelete} userId={userId} />
       ) : page === 'profile' ? (
@@ -283,15 +301,6 @@ function App() {
         <HelpPage onBack={() => setPage('home')} />
       ) : (
         <div className="app-shell">
-          {isFreeLimitExceeded && (
-            <div className="limit-banner">
-              ⚠️ You've used all 5 free interactions.
-              <button className="signin-btn" style={{ marginLeft: 'auto' }} onClick={() => setIsUsingFreeTrial(false)}>
-                Sign In to Continue
-              </button>
-            </div>
-          )}
-
           {error && <div className="error" style={{ marginBottom: 16 }}>{error}</div>}
 
           <div className="grid">

@@ -461,6 +461,36 @@ select option, .select option { background: #0d1425; color: var(--text); }
   margin-bottom: 20px;
 }
 
+.trial-banner {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.12));
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: var(--text);
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  animation: slide-down 0.4s ease-out;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.trial-login-link {
+  color: var(--primary-light);
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: 2px;
+}
+
+@keyframes slide-down {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* ── LOADING ────────────────────────────────────────── */
 .loading { color: var(--text-muted); font-size: 13px; padding: 8px 0; }
 
